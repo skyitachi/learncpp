@@ -1,0 +1,1 @@
+add_executable(sp main.cpp StrBlob.cpp StrBlobPtr.cpp)
