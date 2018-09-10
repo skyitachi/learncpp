@@ -27,5 +27,10 @@ int main () {
   SmartPointer<int> ptr(new int());
   *ptr = 20;
   std::cout << *ptr << std::endl;
+  StrBlob blob{"a", "b"};
+  std::cout << blob.size() << std::endl;
+  blob.push_back("hello");
+  std::string s1 = "hello";
+  blob.push_back(s1);
   return 0;
 }
