@@ -14,8 +14,19 @@ public:
   }
 };
 
+class A {
+public:
+  explicit A(int a):a_(a) {}
+  // A(int a):a_(a) {}
+  int value() {
+    return a_;
+  }
+private:
+  int a_;
+};
+
 int main() {
-  const Test* t = new Test(2);
+  Test* t = new Test(2);
   std::cout <<  t->v << std::endl;
   std::cout << t->getValue() << std::endl;
   
@@ -27,5 +38,8 @@ int main() {
 //  t = new Test(3);
   
   std::cout << "Hello, World!" << std::endl;
+
+  A a = {1};
+  std::cout << "explicit constructor" << std::endl;
   return 0;
 }
