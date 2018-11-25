@@ -9,3 +9,4 @@ add_subdirectory(smart_pointers)
 add_subdirectory(ch13)
 
 add_subdirectory(ch16)
+add_subdirectory(concurrency)
