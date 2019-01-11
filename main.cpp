@@ -1,4 +1,7 @@
 #include <iostream>
+#include <map>
+#include <string>
+#include <cstring>
 
 class Test {
 public:
@@ -57,5 +60,24 @@ int main() {
   NoCopyable nv1(2);
 //  NoCopyable nv2(nv1);
 //  NoCopyable nv2 = nv1;
+  std::map<const std::string, int> memoryIndex;
+  std::string s1 = "hello world";
+  memoryIndex[s1] = 1;
+  std::cout << "memory index: " << memoryIndex[s1] << std::endl;
+  if (memoryIndex.find("hello world") != memoryIndex.end()) {
+    std::cout << "right " << std::endl;
+  }
+  char buf[8];
+  int64_t i = 0;
+  memcpy(buf, &i, sizeof(int64_t));
+  std::string s2;
+  s2.assign(buf, 8);
+  memoryIndex[s2] = 1;
+  char buf2[8];
+  int64_t j = 0;
+  memcpy(buf2, &j, sizeof(int64_t));
+  if (memoryIndex.find(std::string(buf2, 8)) != memoryIndex.end()) {
+    std::cout << "right " << std::endl;
+  }
   return 0;
 }
