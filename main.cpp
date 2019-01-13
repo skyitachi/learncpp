@@ -40,6 +40,47 @@ private:
   int value;
 };
 
+// Note: std::map is sorted
+void test_map() {
+  std::map<std::string, int> m;
+  m["a"] = 1;
+  m["b"] = 2;
+  m["a1"] = 3;
+  auto it = m.begin();
+  for(;it != m.end(); it++) {
+    std::cout << it->first << " = " << it->second << std::endl;
+  }
+  char c1[8];
+  char c2[8];
+  int64_t i1 = 0;
+  int64_t i2 = 10;
+  memcpy(c1, &i2, sizeof(int64_t));
+  memcpy(c2, &i1, sizeof(int64_t));
+  std::string s1(c1, 8);
+  std::string s2(c2, 8);
+  m.clear();
+  m[s1] = 1;
+  m[s2] = 2;
+
+  for(auto item: m) {
+    std::cout << item.second << std::endl;
+  }
+
+  // lower_bound and upper_bound
+  char c3[8];
+  int64_t i3 = 1;
+  memcpy(c3, &i3, sizeof(int64_t));
+  std::string s3(c3, 8);
+  auto lower = m.lower_bound(s3);
+  if (lower != m.end()) {
+    std::cout << "lower_bound " << lower->second << std::endl;
+  }
+  auto upper = m.upper_bound(s3);
+  if (upper != m.end()) {
+    std::cout << "upper_bound " << upper->second << std::endl;
+  }
+}
+
 int main() {
   Test* t = new Test(2);
   std::cout <<  t->v << std::endl;
@@ -79,5 +120,6 @@ int main() {
   if (memoryIndex.find(std::string(buf2, 8)) != memoryIndex.end()) {
     std::cout << "right " << std::endl;
   }
+  test_map();
   return 0;
 }
