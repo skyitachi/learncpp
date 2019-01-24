@@ -2,9 +2,11 @@
 // Created by skyitachi on 2018/12/14.
 //
 
-#include <thread>
 #include <iostream>
 #include <stdio.h>
+#include <chrono>
+#include <thread>
+#include "ThreadSafeQueue.h"
 
 void f1() {
   std::cout << "in the " << std::this_thread::get_id() << " thread\n";
@@ -57,6 +59,42 @@ std::thread test_return_thread() {
   return std::thread(f1);
 }
 
+template <typename T>
+class TClass{
+public:
+  TClass(): value_(1) {}
+  TClass(T v): value_(v) {}
+  T value() { return value_; }
+private:
+  T value_;
+};
+
+void test_thread_safe_queue() {
+//  TClass<int> a;
+//  std::cout << a.value() << std::endl;
+  ThreadSafeQueue<int> tsq;
+  std::thread t1([&tsq](){
+    using namespace std::chrono_literals;
+    for(int i = 0; i < 5; i++) {
+      std::this_thread::sleep_for(1s);
+      tsq.push(i);
+    }
+  });
+  std::thread t2([&tsq](){
+    for(int i = 0; i < 5; i++) {
+      std::shared_ptr<int> v = tsq.wait_and_pop();
+      std::cout << "value is " << *v << std::endl;
+    }
+  });
+  t1.join();
+  t2.join();
+  if (tsq.empty()) {
+    std::cout << "test_thread_safe_queue right\n";
+  } else {
+    std::cout << "test_thread_safe_queue wrong\n";
+  }
+}
+
 int main() {
   std::thread t1(f1);
   std::thread t2 = std::move(t1);
@@ -66,6 +104,7 @@ int main() {
   pass_class_instance_method();
   std::thread t3 = test_return_thread();
   t3.join();
+  test_thread_safe_queue();
   return 0;
 }
 
