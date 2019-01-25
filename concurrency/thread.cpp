@@ -7,6 +7,7 @@
 #include <chrono>
 #include <thread>
 #include "ThreadSafeQueue.h"
+#include "ThreadSafeStack.h"
 
 void f1() {
   std::cout << "in the " << std::this_thread::get_id() << " thread\n";
@@ -95,6 +96,32 @@ void test_thread_safe_queue() {
   }
 }
 
+void test_thread_safe_stack() {
+  ThreadSafeStack<int> threadSafeStack;
+  std::thread t1([&threadSafeStack]() {
+    using namespace std::chrono_literals;
+    for(int i = 0; i < 5; i++) {
+      threadSafeStack.push(i);
+    }
+  });
+  std::thread t2([&threadSafeStack]() {
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(2s);
+    for(int i = 0; i < 5; i++) {
+      std::shared_ptr<int> vptr = threadSafeStack.pop();
+      std::cout << "stack value is : " << *vptr << std::endl;
+    }
+  });
+  t1.join();
+  t2.join();
+  try {
+    threadSafeStack.pop();
+  } catch (std::exception &e) {
+    std::cout << "catch exception: " << e.what() << std::endl;
+  }
+  std::cout << "test_thread_safe_stack right\n";
+}
+
 int main() {
   std::thread t1(f1);
   std::thread t2 = std::move(t1);
@@ -105,6 +132,7 @@ int main() {
   std::thread t3 = test_return_thread();
   t3.join();
   test_thread_safe_queue();
+  test_thread_safe_stack();
   return 0;
 }
 
