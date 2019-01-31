@@ -8,6 +8,7 @@
 #include <thread>
 #include "ThreadSafeQueue.h"
 #include "ThreadSafeStack.h"
+#include "parallel_quick_sort.h"
 
 void f1() {
   std::cout << "in the " << std::this_thread::get_id() << " thread\n";
@@ -122,7 +123,27 @@ void test_thread_safe_stack() {
   std::cout << "test_thread_safe_stack right\n";
 }
 
+void test_parallel_quick_sort() {
+  std::list<int> l = {3,2 ,1};
+  std::list<int> result = parallel_quick_sort(l);
+  for(auto v: result) {
+    std::cout << v << " ";
+  }
+  std::cout << std::endl;
+}
+
+void test_list_splice() {
+  // repointer
+  std::list<int> l1 = {1};
+  std::list<int> l2 = {2, 3};
+  std::cout << "first element " << *l1.begin() << std::endl;
+
+  l1.splice(l1.begin(), l2);
+  std::cout << "first element " << *l1.begin() << std::endl;
+}
+
 int main() {
+  test_list_splice();
   std::thread t1(f1);
   std::thread t2 = std::move(t1);
   oops(1);
@@ -133,6 +154,7 @@ int main() {
   t3.join();
   test_thread_safe_queue();
   test_thread_safe_stack();
+  test_parallel_quick_sort();
   return 0;
 }
 
