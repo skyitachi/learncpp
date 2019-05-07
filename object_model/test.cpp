@@ -19,10 +19,21 @@ private:
   int derived_data2;
 };
 
+class X {};
+class Y: public virtual X {};
+class Z: public virtual X {};
+class A: public Y, public Z {};
+
 int main() {
   char c = 'a';
   char* ptr = &c;
   std::cout << "Point Size: " << sizeof(ptr) << std::endl;
   std::cout << "Base Class Size: " << sizeof(Base) << std::endl;
   std::cout << "Derived Class Size: " << sizeof(Derived) << std::endl;
+  
+  
+  std::cout << "sizeof(X) = " << sizeof(X) << std::endl;
+  std::cout << "sizeof(Y) = " << sizeof(Y) << std::endl;
+  std::cout << "sizeof(Z) = " << sizeof(Z) << std::endl;
+  std::cout << "sizeof(A) = " << sizeof(A) << std::endl;
 }
