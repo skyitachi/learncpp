@@ -24,6 +24,13 @@ class Y: public virtual X {};
 class Z: public virtual X {};
 class A: public Y, public Z {};
 
+class Point3d {
+private:
+  float x;
+  static const int chunkSize = 250;
+  float y;
+};
+
 int main() {
   char c = 'a';
   char* ptr = &c;
@@ -36,4 +43,6 @@ int main() {
   std::cout << "sizeof(Y) = " << sizeof(Y) << std::endl;
   std::cout << "sizeof(Z) = " << sizeof(Z) << std::endl;
   std::cout << "sizeof(A) = " << sizeof(A) << std::endl;
+
+  std::cout << "sizeof(Point3d) = " << sizeof(Point3d) << std::endl;
 }
