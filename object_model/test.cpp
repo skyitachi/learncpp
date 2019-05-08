@@ -24,6 +24,19 @@ class Y: public virtual X {};
 class Z: public virtual X {};
 class A: public Y, public Z {};
 
+class Point3d {
+public:
+  int y;
+};
+
+void testDataMemberAddr() {
+  Point3d point3d;
+  point3d.y = 0;
+  if (&point3d.y == &point3d + (&(Point3d::y) - 1)) {
+    std::cout << "data member address correctly" << std::endl;
+  }
+}
+
 int main() {
   char c = 'a';
   char* ptr = &c;
@@ -36,4 +49,6 @@ int main() {
   std::cout << "sizeof(Y) = " << sizeof(Y) << std::endl;
   std::cout << "sizeof(Z) = " << sizeof(Z) << std::endl;
   std::cout << "sizeof(A) = " << sizeof(A) << std::endl;
+  
+  testDataMemberAddr();
 }
