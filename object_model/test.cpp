@@ -28,8 +28,18 @@ class Point3d {
 private:
   float x;
   static const int chunkSize = 250;
-  float y;
+public:
+  int y;
 };
+
+void testDataMemberAddr() {
+  Point3d point3d;
+  point3d.y = 0;
+  // how get data member offset of class
+//  if (&point3d.y == &point3d + (&(Point3d::y) - 1)) {
+//    std::cout << "data member address correctly" << std::endl;
+//  }
+}
 
 int main() {
   char c = 'a';
@@ -45,4 +55,6 @@ int main() {
   std::cout << "sizeof(A) = " << sizeof(A) << std::endl;
 
   std::cout << "sizeof(Point3d) = " << sizeof(Point3d) << std::endl;
+
+  testDataMemberAddr();
 }
