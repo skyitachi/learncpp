@@ -26,6 +26,8 @@ class Z: public virtual X {};
 class A: public Y, public Z {};
 
 class Point3d {
+private:
+  static const int chunkSize = 250;
 public:
   int x;
   int y;
@@ -40,6 +42,10 @@ void testDataMemberAddr() {
   std::cout << offsetof(Point3d, y) << std::endl;
   printf("&Point3d::x = %p\n", &Point3d::x);
   printf("&Point3d::y = %p\n", &Point3d::y);
+  // how get data member offset of class
+//  if (&point3d.y == &point3d + (&(Point3d::y) - 1)) {
+//    std::cout << "data member address correctly" << std::endl;
+//  }
 }
 
 int main() {
@@ -54,6 +60,8 @@ int main() {
   std::cout << "sizeof(Y) = " << sizeof(Y) << std::endl;
   std::cout << "sizeof(Z) = " << sizeof(Z) << std::endl;
   std::cout << "sizeof(A) = " << sizeof(A) << std::endl;
-  
+
+  std::cout << "sizeof(Point3d) = " << sizeof(Point3d) << std::endl;
+
   testDataMemberAddr();
 }
