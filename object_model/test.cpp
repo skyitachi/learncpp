@@ -2,6 +2,7 @@
 // Created by skyitachi on 2019-05-06.
 //
 #include <iostream>
+#include <cstddef>
 
 class Base {
 public:
@@ -26,15 +27,19 @@ class A: public Y, public Z {};
 
 class Point3d {
 public:
+  int x;
   int y;
 };
 
 void testDataMemberAddr() {
   Point3d point3d;
   point3d.y = 0;
-  if (&point3d.y == &point3d + (&(Point3d::y) - 1)) {
-    std::cout << "data member address correctly" << std::endl;
-  }
+  std::cout << &point3d.y << std::endl;
+  std::cout << &point3d << std::endl;
+  std::cout << offsetof(Point3d, x) << std::endl;
+  std::cout << offsetof(Point3d, y) << std::endl;
+  printf("&Point3d::x = %p\n", &Point3d::x);
+  printf("&Point3d::y = %p\n", &Point3d::y);
 }
 
 int main() {
