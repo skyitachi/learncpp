@@ -48,6 +48,25 @@ void testDataMemberAddr() {
 //  }
 }
 
+class Point {
+public:
+  virtual ~Point();
+  float x();
+  float y();
+  virtual float z();
+};
+
+float Point::x() { return 1.0; }
+float Point::y() { return 1.0; }
+
+void testFunctionMember() {
+//  std::cout << &Point::~Point << std::endl;
+// C++对象模型的中的做法
+  std::cout << "Point::y() addr: " << &Point::y << std::endl;
+  std::cout << "Point::z() addr: " << &Point::z << std::endl;
+}
+
+
 int main() {
   char c = 'a';
   char* ptr = &c;
@@ -64,4 +83,5 @@ int main() {
   std::cout << "sizeof(Point3d) = " << sizeof(Point3d) << std::endl;
 
   testDataMemberAddr();
+  testFunctionMember();
 }
