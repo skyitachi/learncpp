@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <memory>
 
 #include "StrBlob.h"
 #include "StrBlobPtr.h"
@@ -22,6 +23,20 @@ public:
 
   T *operator->() { return ptr; }
 };
+typedef void (*Callback)();
+
+
+class Foo {
+public:
+  ~Foo() {
+    std::cout << "foo destructor called\n";
+  }
+  void sayHello () { std::cout << "hello \n"; }
+};
+
+void test_in_callback(Callback cb) {
+  cb();
+}
 
 int main () {
   SmartPointer<int> ptr(new int());
@@ -32,5 +47,10 @@ int main () {
   blob.push_back("hello");
   std::string s1 = "hello";
   blob.push_back(s1);
+  test_in_callback([]() {
+    // callback里分配的资源，如果不借助外力的话一定会被回收的
+    auto uniqueFoo = std::make_unique<Foo>();
+    uniqueFoo->sayHello();
+  });
   return 0;
 }
