@@ -17,3 +17,5 @@ add_subdirectory(ch9)
 add_subdirectory(ch10)
 add_subdirectory(ch15)
 add_subdirectory(object_model)
+
+add_subdirectory(uv_wrapper)
