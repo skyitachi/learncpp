@@ -104,5 +104,9 @@ int main () {
   std::cout << "-------------------------\n";
   auto sharedPtr = testSharedPtrHasUniquePtrDataMember();
   sharedPtr->sayHello();
+  Foo* rawFooPtr = new Foo();
+  std::cout << "sizeof(Foo*) = " << sizeof(rawFooPtr) << std::endl;
+  std::cout << "sizeof(shared_ptr<Foo>) = " << sizeof(sharedPtr) << std::endl;
+  
   return 0;
 }
