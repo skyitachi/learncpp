@@ -86,6 +86,27 @@ std::shared_ptr<Foo> testSharedPtrHasUniquePtrDataMember() {
   return fooPtr;
 }
 
+class Test {
+public:
+  Test(): id_(gCounter++) {
+    std::cout << "default constructor " << id_ << std::endl;
+  }
+  Test(Test &&t) {
+    id_ = t.id_;
+    std::cout << "move constructor" <<  id_ << std::endl;
+  }
+  
+  ~Test() {
+    std::cout << "destructor " << id_ << std::endl;
+  }
+private:
+  int id_;
+};
+
+Test createTest() {
+  return Test();
+}
+
 int main () {
   SmartPointer<int> ptr(new int());
   *ptr = 20;
@@ -107,6 +128,8 @@ int main () {
   Foo* rawFooPtr = new Foo();
   std::cout << "sizeof(Foo*) = " << sizeof(rawFooPtr) << std::endl;
   std::cout << "sizeof(shared_ptr<Foo>) = " << sizeof(sharedPtr) << std::endl;
-  
+
+  std::cout << "-------------------------\n";
+  Test t(createTest());
   return 0;
 }
