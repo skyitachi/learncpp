@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <thread>
 
 #include "StrBlob.h"
 #include "StrBlobPtr.h"
@@ -107,6 +108,25 @@ Test createTest() {
   return Test();
 }
 
+void threadFn(std::shared_ptr<Unique> ptr) {
+  std::cout << "in the test thread \n";
+//  std::this_thread::sleep_for(std::chrono::seconds(1));
+  std::cout << ptr->Id() << std::endl;
+}
+
+void deleter(Unique* ptr) {
+  std::cout << "in the custom deleter\n";
+  delete ptr;
+}
+// 测试shared_ptr的传引用和传值的区别
+std::thread testSharedPtrPassingArgs() {
+  std::shared_ptr<Unique> sPtr(new Unique(), deleter);
+  std::thread t(threadFn, sPtr);
+  std::cout << "sPtr should destructed\n";
+  return std::move(t);
+}
+
+
 int main () {
   SmartPointer<int> ptr(new int());
   *ptr = 20;
@@ -131,5 +151,21 @@ int main () {
 
   std::cout << "-------------------------\n";
   Test t(createTest());
+ 
+  std::cout << "-------------------------\n";
+  {
+    std::shared_ptr<Unique> sPtr(new Unique(), deleter);
+    std::cout << "test shared_ptr scope\n";
+  }
+  
+  std::cout << "-------------------------\n";
+  std::thread t1(testSharedPtrPassingArgs());
+  t1.join();
+ 
+  {
+    auto sp = std::make_shared<Unique>();
+    auto sp2(sp);
+    std::cout << "in the shared ptr test\n";
+  }
   return 0;
 }
