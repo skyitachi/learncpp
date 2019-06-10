@@ -19,3 +19,4 @@ add_subdirectory(ch15)
 add_subdirectory(object_model)
 
 add_subdirectory(uv_wrapper)
+add_subdirectory(String)
