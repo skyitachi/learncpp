@@ -11,6 +11,7 @@
 class MyString {
 public:
   MyString(): data_(new char[1]) {
+    BOOST_LOG_TRIVIAL(debug) << "in the default constructor";
     size_ = 0;
     data_[0] = '\0';
   }
@@ -72,6 +73,7 @@ public:
   
   void swap(MyString& rhs) {
     std::swap(data_, rhs.data_);
+    std::swap(size_, rhs.size_);
   }
 private:
   char* data_;

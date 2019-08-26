@@ -6,6 +6,8 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <string_view>
+
 int main() {
   // const char * constructor
   MyString a = "11";
@@ -27,4 +29,12 @@ int main() {
   std::cout << vec[0].size() << std::endl;
   std::map<MyString, int> m;
   m[b] = 1;
+  
+  std::string_view s = "hello";
+  
+  using std::string_literals::operator""s;
+  // dangling
+  std::string_view bad("hello"s); // bad
+  
+  std::string_view good("hello");
 }
