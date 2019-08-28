@@ -20,3 +20,5 @@ add_subdirectory(object_model)
 
 add_subdirectory(uv_wrapper)
 add_subdirectory(String)
+
+add_subdirectory(zookeeper)
