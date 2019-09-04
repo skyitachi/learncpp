@@ -58,15 +58,27 @@ void test_right_reference(std::string&& t) {
   std::string& s2 = t;
 }
 
-int main() {
-  std::vector<int> v1 = {1, 2, 3, 4};
+void test_passing_value(std::string& s1) {
+  std::cout << "in the left reference" << std::endl;
+}
 
-  std::vector<double> v2 = {1, 2, 3, 4};
-  print(v1);
-  print(v2);
-  print2(v1);
-  print2(v2);
-  Stack<int> *p;
+void test_passing_value(const std::string& s1) {
+  std::cout << "in the const left reference" << std::endl;
+}
+
+void test_passing_value(std::string&& s1) {
+  std::cout << "in the right reference" << std::endl;
+}
+
+int main() {
+//  std::vector<int> v1 = {1, 2, 3, 4};
+//
+//  std::vector<double> v2 = {1, 2, 3, 4};
+//  print(v1);
+//  print(v2);
+//  print2(v1);
+//  print2(v2);
+//  Stack<int> *p;
   
 //  f1(5);
 //  ft(v1);
@@ -90,8 +102,15 @@ int main() {
 //  fcn3(std::vector<int>().begin(), std::vector<int>().end());
 //  fcn3(std::vector<string>().begin(), std::vector<string>().end());
 
-  std::vector<std::string &> vs;
-  test_right_reference(std::string());
+//  std::vector<std::string &> vs;
+  std::string s1 = "hello";
+  std::string &sr = s1;
+  std::string s0 = "h";
+  const std::string &csr = s1;
+  test_passing_value(s0);
+  test_passing_value(std::move(s0));
+  test_passing_value(sr);
+  test_passing_value(std::move(csr));
 }
 
 //void f1(Stack<char> a) { // initialize template
