@@ -22,3 +22,4 @@ add_subdirectory(uv_wrapper)
 add_subdirectory(String)
 
 add_subdirectory(zookeeper)
+add_subdirectory(leveldb)
