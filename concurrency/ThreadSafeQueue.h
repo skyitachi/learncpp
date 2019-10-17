@@ -33,6 +33,4 @@ private:
   std::condition_variable cond_;
 };
 
-#include "ThreadSafeQueue.tpp"
-
 #endif //LEARNCPP_THREADSAFEQUEUE_H
