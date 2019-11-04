@@ -18,10 +18,10 @@ int main() {
     std::cerr << status.ToString() << std::endl;
     return -1;
   }
-  leveldb::WriteOptions writeOptions;
-  for (int i = 0; i < 65536; i++) {
-    db->Put(writeOptions, std::to_string(i), std::to_string(i));
-  }
+//  leveldb::WriteOptions writeOptions;
+//  for (int i = 0; i < 6; i++) {
+//    db->Put(writeOptions, std::to_string(i), std::to_string(i));
+//  }
 //  leveldb::Iterator *it = db->NewIterator(leveldb::ReadOptions());
 //  for(it->SeekToFirst(); it->Valid(); it->Next()) {
 //    std::cout << it->key().ToString() << ":" << it->value().ToString() << std::endl;

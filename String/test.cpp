@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <string_view>
+#include <regex>
 
 int main() {
   // const char * constructor
@@ -37,4 +38,11 @@ int main() {
   std::string_view bad("hello"s); // bad
   
   std::string_view good("hello");
+  
+  std::string text = "Quick brown fox.";
+  std::regex ws_re("\\s+");
+  std::vector<std::string> v(std::sregex_token_iterator(text.begin(), text.end(), ws_re, -1), std::sregex_token_iterator());
+  
+  for(auto&& s: v)
+    std::cout<<s<<"\n";
 }
