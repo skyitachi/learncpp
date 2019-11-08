@@ -13,7 +13,7 @@ int main() {
   rocksdb::DB* db;
   rocksdb::Options options = rocksdb::Options();
   options.create_if_missing = true;
-  rocksdb::Status status = rocksdb::DB::Open(options, "rocks_test_db", &db);
+  rocksdb::Status status = rocksdb::DB::Open(options, "rocks_simple_db", &db);
   assert(status.ok());
   //single put
   for (int i = 0; i < 65536; i++) {

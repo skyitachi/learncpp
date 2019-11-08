@@ -14,3 +14,6 @@ target_link_libraries(rocks_transaction rocksdb)
 
 add_executable(comparator comparator.cpp)
 target_link_libraries(comparator rocksdb)
+
+add_executable(column_families column_families.cpp)
+target_link_libraries(column_families rocksdb)
