@@ -17,3 +17,13 @@ target_link_libraries(comparator rocksdb)
 
 add_executable(column_families column_families.cpp)
 target_link_libraries(column_families rocksdb)
+
+add_executable(inlineskiplist_debug inlineskiplist_debug.cpp)
+target_link_libraries(inlineskiplist_debug rocksdb)
+
+add_executable(rocks_opt_transaction rocks_opt_transaction.cpp)
+target_link_libraries(rocks_opt_transaction rocksdb)
+
+add_executable(rocks_merge_operator rocks_merge_operator.cpp)
+target_link_libraries(rocks_merge_operator rocksdb)
+

@@ -13,6 +13,9 @@
 void f1() {
   std::cout << "in the " << std::this_thread::get_id() << " thread\n";
 }
+void f2() {
+  std::cout << "in the f2\n";
+}
 
 void f(int i, std::string const &s) {
   std::cout << i << " " << s << std::endl;
@@ -148,7 +151,7 @@ int main() {
   std::thread t2 = std::move(t1);
   oops(1);
   t2.join();
-  pass_reference();
+  pass_reference(;
   pass_class_instance_method();
   std::thread t3 = test_return_thread();
   t3.join();

@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(learncpp)
 
+include_directories(/usr/local/include)
+LINK_DIRECTORIES(/usr/local/lib)
+
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(learncpp main.cpp)
