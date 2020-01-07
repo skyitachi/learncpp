@@ -26,3 +26,5 @@ add_subdirectory(String)
 
 add_subdirectory(zookeeper)
 add_subdirectory(leveldb)
+
+add_subdirectory(titan_db)

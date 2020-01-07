@@ -57,7 +57,6 @@ void test_repeatable_read(rocksdb::TransactionDB* txn_db) {
 }
 
 int main() {
-  // NOTE: 打开一个已经存在过的db，会有问题
   rocksdb::Options options = rocksdb::Options();
   options.create_if_missing = true;
   std::shared_ptr<rocksdb::Logger> logger;

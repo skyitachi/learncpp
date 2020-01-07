@@ -1,4 +1,5 @@
 link_directories(/Users/skyitachi/lab/leveldb/cmake-build-debug)
+link_directories(/Users/skyitachi/lab/titan/cmake-build-debug)
 #link_directories(/Users/skyitachi/lab/rocksdb/cmake-build-debug)
 add_executable(test_level test_level.cpp)
 target_link_libraries(test_level leveldb snappy)
