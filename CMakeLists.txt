@@ -4,9 +4,9 @@ project(learncpp)
 include_directories(/usr/local/include)
 LINK_DIRECTORIES(/usr/local/lib)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(learncpp main.cpp)
+add_executable(learncpp main.cpp modern/test.cpp)
 
 add_subdirectory(smart_pointers)
 add_subdirectory(ch13)
@@ -28,3 +28,5 @@ add_subdirectory(zookeeper)
 add_subdirectory(leveldb)
 
 add_subdirectory(titan_db)
+
+add_subdirectory(modern)
