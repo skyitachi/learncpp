@@ -4,6 +4,7 @@
 #include <optional>
 #include <string>
 #include <iostream>
+#include <map>
 // std::optional has a some memory overhead
 class UserName {
 public:
@@ -17,6 +18,10 @@ public:
 
 private:
   std::string mName;
+};
+
+struct Point {
+  int x, y;
 };
 
 int main() {
@@ -43,4 +48,27 @@ int main() {
     oEmpty = UserName("abc");
     oEmpty.reset();
     std::cout << "end of program\n";
+    // great
+    if (auto a = true; a) {
+      std::cout << "go like if condition\n";
+    }
+    // structured binding
+    Point p = {1, 2};
+    auto [x, y] = p;
+    std::cout << "x is " << x << " y is " << y << std::endl;
+
+  {
+    int arr[3] = {1, 2, 3};
+    auto [x, y, z] = arr;
+    std::cout << x << " " << y << " " << z << std::endl;
+  }
+  {
+    // great
+    std::map<std::string, std::string> m;
+    m.insert({"a", "1"});
+    m.insert({"b", "2"});
+    for (auto &[k, v]: m) {
+      printf("key=%s, value=%s\n", k.c_str(), v.c_str());
+    }
+  }
 }
