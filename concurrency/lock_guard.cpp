@@ -49,6 +49,27 @@ void test_recursive_lock() {
   }
 
 }
+
+void test_unique_lock() {
+  std::mutex mu;
+  int c = 0;
+  std::thread t1([&mu, &c] {
+    std::unique_lock lk(mu);
+    assert(lk.owns_lock());
+    c += 1;
+
+  });
+
+  std::thread t2([&mu, &c] {
+    std::unique_lock lk(mu);
+    assert(lk.owns_lock());
+    c += 1;
+  });
+  t1.join();
+  t2.join();
+  assert(c == 2);
+}
+
 int main() {
   std::cout << "main: " << g_i << std::endl;
   std::thread t1(safe_increment);
@@ -58,4 +79,5 @@ int main() {
   std::cout << "main: " << g_i << std::endl;
 //  test_lock();
   test_recursive_lock();
+  test_unique_lock();
 }
