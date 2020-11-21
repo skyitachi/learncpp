@@ -5,5 +5,6 @@ add_executable(thread thread.cpp ThreadSafeStack.cpp ThreadSafeStack.h parallel_
 add_executable(mutex mutex.cpp)
 add_executable(atomic atomic.cpp)
 add_executable(cv cv.cpp)
-add_executable(concurrent_hashmap_tests concurrent_hashmap.cpp concurrent_hashmap_tests.cpp)
+add_executable(concurrent_hashmap_tests concurrent_hashmap_tests.cpp)
+target_link_libraries(concurrent_hashmap_tests gtest)
 target_link_libraries(mutex boost_thread-mt boost_system-mt pthread)
