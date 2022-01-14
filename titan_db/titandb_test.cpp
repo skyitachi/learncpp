@@ -13,5 +13,9 @@ int main() {
   using rocksdb::WriteOptions;
   s = db->Put(WriteOptions(), "key1", "value1");
   assert(s.ok());
+
+  using rocksdb::ReadOptions;
+  std::string value;
+  db->Get(ReadOptions(), "key1", &value);
   delete db;
 }

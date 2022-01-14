@@ -3,9 +3,12 @@
 //
 
 #include <rocksdb/db.h>
+#include <rocksdb/merge_operator.h>
+#include <memory>
 #include <string>
 #include <memory>
 
+using namespace rocksdb;
 class Counters {
 public:
   // (re)set the value of a named counter
@@ -22,48 +25,43 @@ public:
   virtual void Add(const std::string& key, uint64_t value);
 };
 
-class RocksCounters : public Counters {
+class MyAppender: public AssociativeMergeOperator {
 public:
-  static uint64_t kDefaultCount = 0;
-  RocksCounters(std::shared_ptr<rocksdb::DB> db): db_(db) {};
+  virtual ~MyAppender() {}
 
-  // mapped to a RocksDB Put
-  virtual void Set(const std::string& key, uint64_t value) {
-    string serialized = Serialize(value);
-    db_->Put(put_option_, key,  serialized));
-  }
-
-  // mapped to a RocksDB Delete
-  virtual void Remove(const string& key) {
-    db_->Delete(delete_option_, key);
-  }
-
-  // mapped to a RocksDB Get
-  virtual bool Get(const std::string& key, uint64_t *value) {
-    string str;
-    auto s = db_->Get(get_option_, key,  &str);
-    if (s.ok()) {
-      *value = Deserialize(str);
-      return true;
+  virtual bool Merge(const Slice& key, const Slice* existing_value, const Slice& value, std::string *new_value, Logger* logger) const {
+    if (existing_value) {
+      printf("existing value: %s, value: %s\n", existing_value->data(), value.data());
+      *new_value = existing_value->ToString() + value.ToString();
     } else {
-      return false;
+      *new_value = value.ToString();
     }
+    return true;
   }
 
-  // implemented as get -> modify -> set
-  virtual void Add(const std::string& key, uint64_t value) {
-    uint64_t base;
-    if (!Get(key, &base)) {
-      base = kDefaultValue;
-    }
-    Set(key, base + value);
+  virtual const char *Name() const {
+    return "MyAppender";
   }
-
-private:
-  std::shared_ptr<rocksdb::DB> db_;
 };
 
 int main() {
+  rocksdb::DB* db;
+  rocksdb::Options options = rocksdb::Options();
+  options.create_if_missing = true;
+  options.merge_operator = std::make_shared<MyAppender>();
+  rocksdb::Status status = rocksdb::DB::Open(options, "rocks_merge_db", &db);
+  auto ro = ReadOptions();
 
+  auto wo = WriteOptions();
+  db->Merge(wo, "counter", "a");
+  std::string current_value;
+  auto s = db->Get(ro, "counter", &current_value);
+  assert(s.ok());
+  printf("current value: %s\n", current_value.c_str());
+  db->Merge(wo , "counter", "b");
+  s = db ->Get(ro, "counter", &current_value);
+  assert(s.ok());
+  printf("current value: %s\n", current_value.c_str());
+  return 0;
 }
 

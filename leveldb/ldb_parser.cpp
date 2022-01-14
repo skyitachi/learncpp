@@ -9,7 +9,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <boost/crc.hpp>
-#include <ByteBuffer.hpp>
 #include <leveldb/db.h>
 
 const char* decodeVarint32(const char* buf, const char* limit, uint32_t* value) {

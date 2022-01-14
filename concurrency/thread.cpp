@@ -151,7 +151,7 @@ int main() {
   std::thread t2 = std::move(t1);
   oops(1);
   t2.join();
-  pass_reference(;
+  pass_reference();
   pass_class_instance_method();
   std::thread t3 = test_return_thread();
   t3.join();

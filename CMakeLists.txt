@@ -30,3 +30,7 @@ add_subdirectory(leveldb)
 add_subdirectory(titan_db)
 
 add_subdirectory(modern)
+
+add_subdirectory(usb)
+
+add_subdirectory(arrow)
