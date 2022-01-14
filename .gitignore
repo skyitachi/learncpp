@@ -5,3 +5,4 @@ cmake-build-release
 .history
 .idea
 build
+.vscode
