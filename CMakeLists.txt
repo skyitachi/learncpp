@@ -34,3 +34,5 @@ add_subdirectory(modern)
 add_subdirectory(usb)
 
 add_subdirectory(arrow)
+
+add_subdirectory(faiss_demo)
