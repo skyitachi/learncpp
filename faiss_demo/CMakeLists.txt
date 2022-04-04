@@ -6,9 +6,6 @@ find_package(absl CONFIG REQUIRED)
 set(protobuf_MODULE_COMPATIBLE TRUE)
 find_package(Protobuf REQUIRED)
 
-include_directories("/usr/local/opt/openssl@3/include")
-link_directories("/usr/local/opt/openssl@3/lib")
-
 message(STATUS "Using protobuf ${Protobuf_VERSION}")
 
 set(_PROTOBUF_LIBPROTOBUF protobuf::libprotobuf)
@@ -35,6 +32,8 @@ endif()
 get_filename_component(common_proto "./proto/common.proto" ABSOLUTE)
 get_filename_component(common_proto_path "${common_proto}" PATH)
 
+message(STATUS, "proto_path: ${common_proto_path}")
+message(STATUS, "bin dir: ${CMAKE_CURRENT_BINARY_DIR}")
 
 set(common_proto_sources "${CMAKE_CURRENT_BINARY_DIR}/common.pb.cc")
 set(common_proto_headers "${CMAKE_CURRENT_BINARY_DIR}/common.pb.h")
@@ -68,9 +67,16 @@ target_link_libraries(common_grpc_proto
 )
 
 add_executable(faiss_server main.cpp)
+# target_link_libraries(faiss_server faiss)
 target_link_libraries(faiss_server
     common_grpc_proto
-    ${_REFLECTION}
-    ${_GRPC_GRPCPP}
-    ${_PROTOBUF_LIBPROTOBUF}
+	faiss
+)
+
+
+add_executable(faiss_client client.cpp)
+
+target_link_libraries(faiss_client
+    common_grpc_proto
+	faiss
 )
