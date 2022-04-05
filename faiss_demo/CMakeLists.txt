@@ -1,5 +1,9 @@
 set(CMAKE_CXX_STANDARD 11)
 
+include_directories(/usr/local/Cellar/openssl@3/3.0.1/include)
+
+link_directories(/usr/local/Cellar/openssl@3/3.0.1/lib)
+
 find_package(Threads REQUIRED)
 find_package(absl CONFIG REQUIRED)
 
@@ -47,8 +51,8 @@ add_custom_command(
 		--cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
 		-I "${common_proto_path}"
 		--plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
-		"${hw_proto}"
-	DEPENDS "${hw_proto}"
+		"${common_proto}"
+	DEPENDS "${common_proto}"
 )
 
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
@@ -71,6 +75,9 @@ add_executable(faiss_server main.cpp)
 target_link_libraries(faiss_server
     common_grpc_proto
 	faiss
+	${_REFLECTION}
+	${_GRPC_GRPCPP}
+	${_PROTOBUF_LIBPROTOBUF}
 )
 
 
