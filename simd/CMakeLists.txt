@@ -1,0 +1,1 @@
+add_executable(simd_demo main.cpp)

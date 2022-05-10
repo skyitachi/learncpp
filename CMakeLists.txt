@@ -39,3 +39,7 @@ add_subdirectory(faiss_demo)
 
 
 add_subdirectory(openssldemo)
+
+add_subdirectory(kdtreedemo)
+
+add_subdirectory(simd)
