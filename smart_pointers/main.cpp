@@ -67,10 +67,27 @@ void testArgUniquePtr(std::unique_ptr<Foo> fooPtr) {
   fooPtr->sayHello();
 }
 
-void testUnqiuePtr() {
+void testRefArgUniquePtr(std::unique_ptr<Foo>& fooPtr) {
+  fooPtr->sayHello();
+}
+
+void testUniquePtr() {
   auto foo = std::make_unique<Foo>();
   testArgUniquePtr(std::move(foo));
-  std::cout << "foo already destroyed\n";
+  if (foo.get() == nullptr) {
+    std::cout << "foo already destroyed\n";
+  } else {
+    std::cout << "unique ptr wrong" << std::endl;
+  }
+
+  auto foo2 = std::make_unique<Foo>();
+
+  testRefArgUniquePtr(foo2);
+  if (foo2.get() == nullptr) {
+    std::cout << "foo2 already destroyed" << std::endl;
+  } else {
+    std::cout << "foo2 still alive" << std::endl;
+  }
 }
 
 void receiveSharedPtr(std::shared_ptr<Foo> ptr) {
@@ -141,7 +158,7 @@ int main () {
     auto uniqueFoo = std::make_unique<Foo>();
     uniqueFoo->sayHello();
   });
-  testUnqiuePtr();
+  testUniquePtr();
   std::cout << "-------------------------\n";
   auto sharedPtr = testSharedPtrHasUniquePtrDataMember();
   sharedPtr->sayHello();
