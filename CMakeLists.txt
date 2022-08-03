@@ -6,7 +6,7 @@ LINK_DIRECTORIES(/usr/local/lib)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(learncpp main.cpp modern/test.cpp)
+add_executable(learncpp main.cpp)
 
 add_subdirectory(smart_pointers)
 add_subdirectory(ch13)

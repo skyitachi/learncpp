@@ -3,6 +3,14 @@
 #include <string>
 #include <cstring>
 
+
+typedef struct page_meta
+{
+  uint64_t valid : 1;   // valid 表示该 page 是否已经分配和使用，如果是 0，表示该 page 没有被使用
+  uint64_t sn : 31;     // sn 来表示页的新旧，sn 越大表示页越新，old page 一般 sn 会被重置为 0
+  uint64_t req_id : 32; // req_id, which is in the range from 1~1024*1024*1024
+} page_meta_t;
+
 class Test {
 public:
   Test(int v_): v(v_) {};
@@ -121,5 +129,10 @@ int main() {
     std::cout << "right " << std::endl;
   }
   test_map();
+  page_meta_t* page_new = new page_meta_t();
+  std::cout << "sizeof(page_meta_t) = " << sizeof(page_meta_t) << std::endl;
+  uint64_t req_id = 1UL << 32 | 1;
+  memcpy(page_new, &req_id, 8);
+  std::cout << "valid: " << page_new->valid << std::endl;
   return 0;
 }
