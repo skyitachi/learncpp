@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <initializer_list>
+#include "defer.h"
 // std::optional has a some memory overhead
 class UserName {
 public:
@@ -55,6 +56,8 @@ class MagicFoo {
 };
 
 int main() {
+
+  DEFER([]{ std::cout << "in the defer block" << std::endl; });
     std::optional<std::string> s = std::nullopt;
     if (s) {
         std::cout << "wrong answer\n";

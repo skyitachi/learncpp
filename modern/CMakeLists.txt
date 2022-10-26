@@ -1,2 +1,3 @@
 set(CMAKE_CXX_STANDARD 17)
-add_executable(test_modern test.cpp)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -save-temps")
+add_executable(test_modern test.cpp defer.h)
