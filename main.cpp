@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 #include <cstring>
-
+#include <time.h>
 
 typedef struct page_meta
 {
@@ -134,5 +134,16 @@ int main() {
   uint64_t req_id = 1UL << 32 | 1;
   memcpy(page_new, &req_id, 8);
   std::cout << "valid: " << page_new->valid << std::endl;
+
+  struct tm tm{};
+  memset(&tm, 0, sizeof(tm));
+  const char* v = "2020-21-21";
+  char* ret = strptime(v, "%Y-%m-%d", &tm);
+  if (ret != nullptr) {
+    time_t epoch = mktime(&tm);
+    std::cout << "timestamp: " << epoch << std::endl;
+  } else {
+    std::cout << "parse error" << std::endl;
+  }
   return 0;
 }
