@@ -43,3 +43,5 @@ add_subdirectory(openssldemo)
 add_subdirectory(kdtreedemo)
 
 add_subdirectory(simd)
+
+add_subdirectory(duckdb)
