@@ -137,7 +137,7 @@ int main() {
 
   struct tm tm{};
   memset(&tm, 0, sizeof(tm));
-  const char* v = "2020-21-21";
+  const char* v = "2017-2-30";
   char* ret = strptime(v, "%Y-%m-%d", &tm);
   if (ret != nullptr) {
     time_t epoch = mktime(&tm);
