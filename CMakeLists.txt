@@ -6,7 +6,7 @@ LINK_DIRECTORIES(/usr/local/lib)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(learncpp main.cpp)
+add_executable(learncpp main.cpp folly/main.cpp)
 
 add_subdirectory(smart_pointers)
 add_subdirectory(ch13)
@@ -45,3 +45,4 @@ add_subdirectory(kdtreedemo)
 add_subdirectory(simd)
 
 add_subdirectory(duckdb)
+add_subdirectory(folly)
