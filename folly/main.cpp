@@ -36,4 +36,15 @@ int main() {
     auto bs2 = s1;
     printf("after copy constructor std data pointer %p\n", bs2.c_str());
   }
+
+  // verify medium string
+  {
+    fbstring s1;
+    s1.resize(200);
+
+    printf("medium fbstring data pointer: %p\n", s1.c_str());
+
+    fbstring s2 = s1;
+    printf("medium fbstring after copy new data pointer: %p\n", s2.c_str());
+  }
 }
