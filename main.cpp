@@ -89,6 +89,11 @@ void test_map() {
   }
 }
 
+template<class T>
+void pass_by_ref(T& v, T newVal) {
+  v = newVal;
+}
+
 int main() {
   Test* t = new Test(2);
   std::cout <<  t->v << std::endl;
@@ -144,6 +149,17 @@ int main() {
     std::cout << "timestamp: " << epoch << std::endl;
   } else {
     std::cout << "parse error" << std::endl;
+  }
+
+  {
+    int v1 = 10;
+    pass_by_ref(v1, 20);
+    std::cout << "after pass_by_ref v1 value: " << v1 << std::endl;
+
+    std::string v2 = "hello world";
+    std::string newV2 = "hello";
+    pass_by_ref(v2, newV2);
+    std::cout << "after pass_by_ref v2 value: " << v2 << std::endl;
   }
   return 0;
 }

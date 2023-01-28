@@ -222,5 +222,16 @@ int main() {
         std::cout << p.use_count() << std::endl;
         std::cout << q.use_count() << std::endl;
     }
+
+    {
+      std::unique_ptr<int> iv = std::make_unique<int>(10);
+      if (iv) {
+        std::cout << "unique_ptr is valid before moved\n";
+      }
+      auto iv2 = std::move(iv);
+      if (!iv) {
+        std::cout << "unique_ptr is invalid after moved\n";
+      }
+    }
     return 0;
 }
