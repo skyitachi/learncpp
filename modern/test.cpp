@@ -10,15 +10,18 @@
 #include <algorithm>
 #include <initializer_list>
 #include "defer.h"
+#include <jemalloc/jemalloc.h>
+
+#define JEMALLOC_NO_DEMANGLE
 // std::optional has a some memory overhead
 class UserName {
 public:
   explicit UserName(const std::string &str) : mName(str) {
-      std::cout << "UserName constructor( " << str << ")\n";
+    std::cout << "UserName constructor( " << str << ")\n";
   }
 
   ~UserName() {
-      std::cout << "UserName destructor (" << mName << ")\n";
+    std::cout << "UserName destructor (" << mName << ")\n";
   }
 
 private:
@@ -30,6 +33,7 @@ struct Point {
 };
 
 void foo(char *);
+
 void foo(int);
 
 int len_foo() {
@@ -46,10 +50,11 @@ constexpr int fibonacci(const int n) {
 }
 
 class MagicFoo {
- public:
+public:
   std::vector<int> vec;
+
   MagicFoo(std::initializer_list<int> list) {
-    for(auto it = list.begin(); it != list.end(); ++it) {
+    for (auto it = list.begin(); it != list.end(); ++it) {
       vec.push_back(*it);
     }
   }
@@ -57,38 +62,38 @@ class MagicFoo {
 
 int main() {
 
-  DEFER([]{ std::cout << "in the defer block" << std::endl; });
-    std::optional<std::string> s = std::nullopt;
-    if (s) {
-        std::cout << "wrong answer\n";
-    } else {
-        std::cout << "right \n";
-    }
+  DEFER([] { std::cout << "in the defer block" << std::endl; });
+  std::optional<std::string> s = std::nullopt;
+  if (s) {
+    std::cout << "wrong answer\n";
+  } else {
+    std::cout << "right \n";
+  }
 
-    std::optional<int> oint = 10;
-    std::cout << "oint: " << *oint << std::endl;
-    std::cout << "oint: " << oint.value() << std::endl;
+  std::optional<int> oint = 10;
+  std::cout << "oint: " << *oint << std::endl;
+  std::cout << "oint: " << oint.value() << std::endl;
 
-    std::optional<double> oduble;
-    std::cout << "odouble " << oduble.value_or(10.0) << std::endl;
+  std::optional<double> oduble;
+  std::cout << "odouble " << oduble.value_or(10.0) << std::endl;
 
-    std::optional<UserName> oEmpty;
-    oEmpty.emplace("ysp");
+  std::optional<UserName> oEmpty;
+  oEmpty.emplace("ysp");
 
-    oEmpty.emplace("skyitachi");
+  oEmpty.emplace("skyitachi");
 
-    // NOTE: it will not call destructor
-    oEmpty = UserName("abc");
-    oEmpty.reset();
-    std::cout << "end of program\n";
-    // great
-    if (auto a = true; a) {
-      std::cout << "go like if condition\n";
-    }
-    // structured binding
-    Point p = {1, 2};
-    auto [x, y] = p;
-    std::cout << "x is " << x << " y is " << y << std::endl;
+  // NOTE: it will not call destructor
+  oEmpty = UserName("abc");
+  oEmpty.reset();
+  std::cout << "end of program\n";
+  // great
+  if (auto a = true; a) {
+    std::cout << "go like if condition\n";
+  }
+  // structured binding
+  Point p = {1, 2};
+  auto [x, y] = p;
+  std::cout << "x is " << x << " y is " << y << std::endl;
 
   {
     int arr[3] = {1, 2, 3};
@@ -140,7 +145,7 @@ int main() {
   {
     std::vector<int> vec = {1, 2, 3, 4};
     if (const std::vector<int>::iterator itr = std::find(vec.begin(), vec.end(), 3);
-      itr != vec.end()) {
+        itr != vec.end()) {
       *itr = 4;
     }
   }
@@ -173,7 +178,7 @@ int main() {
 }
 
 // 尾返回类型推导
-template <typename T, typename U>
+template<typename T, typename U>
 auto add2(T x, U y) -> decltype(x + y) {
   return x + y;
 }
