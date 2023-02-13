@@ -46,3 +46,4 @@ add_subdirectory(simd)
 
 add_subdirectory(duckdb)
 add_subdirectory(folly)
+add_subdirectory(compression_demo)
