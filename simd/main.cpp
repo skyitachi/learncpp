@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <benchmark/benchmark.h>
 #include <emmintrin.h>
 
 void add(int *x, int *y, int *z, int len) {
@@ -11,13 +12,30 @@ void add(int *x, int *y, int *z, int len) {
 	}
 }
 
-int main() {
-	int x[] = {1, 2, 3, 4};
-	int y[] = {2,3, 4, 5};
-	int z[] = {0,0,0,0};
-	add(x, y, z, 4);
-	for (int i =0; i < 4; i++) {
-		std::cout << z[i] << " ";
-	}
-	std::cout << std::endl;
+void naive_add(int *x, int *y, int *z, int len) {
+  for(int i = 0; i < len; i++) {
+    z[i] = x[i] + y[i];
+  }
 }
+
+static void BM_SimdFunction(benchmark::State& state) {
+  int x[] = {1, 2, 3, 4, 6, 7, 8, 9};
+  int y[] = {2,3, 4, 5, 10, 11, 12, 9};
+  int z[] = {0,0,0,0, 0, 0, 0, 0};
+  for (auto _ : state) {
+    add(x, y, z, 8);
+  }
+}
+
+static void BM_NaiveFunction(benchmark::State& state) {
+  int x[] = {1, 2, 3, 4, 6, 7, 8, 9};
+  int y[] = {2,3, 4, 5, 10, 11, 12, 9};
+  int z[] = {0,0,0,0, 0, 0, 0, 0};
+  for (auto _ : state) {
+    naive_add(x, y, z, 8);
+  }
+}
+
+BENCHMARK(BM_SimdFunction);
+BENCHMARK(BM_NaiveFunction);
+BENCHMARK_MAIN();
