@@ -1,0 +1,1 @@
+add_executable(hdfs_demo hdfs_demo.cpp)
