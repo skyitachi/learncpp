@@ -8,15 +8,26 @@ int main() {
   ska::flat_hash_map<int, std::string> fmap;
   fmap.insert({1, "hello"});
   std::cout << fmap.size() << std::endl;
-  fmap[100] = "world";
+//  fmap[100] = "world";
 
-  auto v = fmap[2];
-  std::cout << "after look for none exist values, fmap size: " << fmap.size() << std::endl;
+//  auto v = fmap[2];
+//  std::cout << "after look for none exist values, fmap size: " << fmap.size() << std::endl;
 
   auto it  = fmap.find(2);
   if (it != fmap.end()) {
     std::cout << "after lookup none exist key by [] operator: it will auto insert" << std::endl;
   } else {
     std::cout << "it works fine" << std::endl;
+  }
+
+  {
+    ska::flat_hash_map<std::string, int> imap;
+    imap.insert({"a", 1});
+  }
+
+  {
+    std::cout << "imap2: " << std::endl;
+    ska::flat_hash_map<std::string, int> imap2;
+    imap2.insert({"a", 1});
   }
 }

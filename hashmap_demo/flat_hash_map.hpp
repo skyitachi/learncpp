@@ -12,6 +12,7 @@
 #include <iterator>
 #include <utility>
 #include <type_traits>
+#include <typeinfo>
 
 #ifdef _MSC_VER
 #define SKA_NOINLINE(...) __declspec(noinline) __VA_ARGS__
@@ -575,9 +576,11 @@ public:
     template<typename Key, typename... Args>
     std::pair<iterator, bool> emplace(Key && key, Args &&... args)
     {
+      std::cout << "key type is: " << typeid(Key).name() << ", hash_code "<< typeid(Key).hash_code() << std::endl;
         size_t index = hash_policy.index_for_hash(hash_object(key), num_slots_minus_one);
         EntryPointer current_entry = entries + ptrdiff_t(index);
         int8_t distance_from_desired = 0;
+        // linear probe
         for (; current_entry->distance_from_desired >= distance_from_desired; ++current_entry, ++distance_from_desired)
         {
             if (compares_equal(key, current_entry->value))
@@ -592,6 +595,8 @@ public:
     }
     std::pair<iterator, bool> insert(value_type && value)
     {
+      std::cout << "key type is: " << typeid(value_type).name()
+        << ", hash code: " << typeid(value_type).hash_code() << std::endl;
         return emplace(std::move(value));
     }
     template<typename... Args>
