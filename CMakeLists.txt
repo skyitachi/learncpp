@@ -50,3 +50,4 @@ add_subdirectory(compression_demo)
 
 add_subdirectory(hdfs)
 add_subdirectory(abseil_tips_demo)
+add_subdirectory(hashmap_demo)
