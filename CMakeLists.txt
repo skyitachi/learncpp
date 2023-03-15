@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(learncpp main.cpp)
 
+add_subdirectory(thirdparty/abseil-cpp)
+
+
 add_subdirectory(smart_pointers)
 add_subdirectory(ch13)
 
