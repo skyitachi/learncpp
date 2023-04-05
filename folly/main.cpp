@@ -4,8 +4,13 @@
 #include <iostream>
 #include <string>
 #include <folly/FBString.h>
+#include <folly/ConcurrentSkipList.h>
 
 using namespace folly;
+
+bool myComparator(const char* a, const char *b) {
+  return strlen(a) < strlen(b);
+}
 
 int main() {
   {
@@ -46,5 +51,15 @@ int main() {
 
     fbstring s2 = s1;
     printf("medium fbstring after copy new data pointer: %p\n", s2.c_str());
+  }
+
+  {
+    auto accessor = folly::ConcurrentSkipList<const char *, decltype(&myComparator)>::create(7);
+    accessor.add("hello world");
+    accessor.add("hello world2");
+
+    auto first = accessor.first();
+
+    std::cout << "first: " << first << std::endl;
   }
 }
