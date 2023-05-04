@@ -14,7 +14,7 @@ struct data_row {
 };
 
 arrow::Result<std::shared_ptr<arrow::Table>> VectorToColumnarTable(
-    const std::vector<struct data_row>& rows) {
+    const std::vector<data_row>& rows) {
 	
 	arrow::MemoryPool* pool = arrow::default_memory_pool();
 	Int64Builder id_builder(pool);
@@ -64,12 +64,13 @@ int main(int argc, char **argv) {
 
 	std::cout << table->GetColumnByName("id")->ToString() << std::endl;
 
-	int64_t first_id; 
-	// arrow::Status status = table->GetColumnByName("id")->GetScalar(0).Value(&first_id);	
-	// if (status.OK()) {
-	// 	std::cout << "first_id: " << first_id << std::endl;
-	// } else {
-	// 	std::cout << "got first_id failed: " <<  status.CodeAsString() << std::endl;
-	// }
+  std::shared_ptr<arrow::Scalar> first_id;
+  auto status = table->GetColumnByName("id")->GetScalar(0).Value(&first_id);
+  if (status.ok()) {
+    auto real_value = static_cast<arrow::Int64Scalar&>(*first_id).value;
+    std::cout << "first_id: " << real_value << std::endl;
+  } else {
+    std::cout << "got first_id failed: "  << status.CodeAsString() << std::endl;
+  }
 	return 0;	
 }
