@@ -7,6 +7,7 @@
 #include <folly/FBString.h>
 #include <folly/ConcurrentSkipList.h>
 #include <string_view>
+#include <hsql/SQLParser.h>
 
 using namespace folly;
 
@@ -121,6 +122,21 @@ int main() {
       std::cout << "first: " << *first << std::endl;
     } else {
       std::cout << "cannot found first" << std::endl;
+    }
+  }
+  {
+    const std::string query = "select * from lineitem";
+    hsql::SQLParserResult result;
+    hsql::SQLParser::parse(query, &result);
+
+    if (result.isValid() && result.size() > 0) {
+      const hsql::SQLStatement* statement = result.getStatement(0);
+
+      if (statement->isType(hsql::kStmtSelect)) {
+        const auto* select = static_cast<const hsql::SelectStatement*>(statement);
+        std::cout << "table_name: " << select->fromTable->getName() << std::endl;
+        /* ... */
+      }
     }
   }
 }
