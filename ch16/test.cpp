@@ -70,6 +70,30 @@ void test_passing_value(std::string&& s1) {
   std::cout << "in the right reference" << std::endl;
 }
 
+template<typename TR, typename TA>
+TR unary_execute(TA input, TR(*udf_func)(TA)) {
+  return udf_func(input);
+}
+
+template<typename TR, typename... Args>
+void callFn(const std::string& name, TR (*udf_func)(Args...)) {
+  const std::size_t args_sz = sizeof...(Args);
+  std::cout << "args sz: " << args_sz << std::endl;
+  // how to call udf_func
+  if (args_sz == 1) {
+    unary_execute<TR, Args...>((int)1000, udf_func);
+  }
+}
+
+void fn_unary(int a) {
+
+  std::cout << "custom unary function, arg: " << a << std::endl;
+}
+
+void fn(int a, int b) {
+  std::cout << "custom udf function" << std::endl;
+}
+
 int main() {
 //  std::vector<int> v1 = {1, 2, 3, 4};
 //
@@ -111,6 +135,9 @@ int main() {
   test_passing_value(std::move(s0));
   test_passing_value(sr);
   test_passing_value(std::move(csr));
+
+
+  callFn("my_udf", &fn_unary);
 }
 
 //void f1(Stack<char> a) { // initialize template
