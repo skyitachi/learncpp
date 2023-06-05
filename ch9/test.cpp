@@ -51,6 +51,16 @@ void test_resize() {
 
 }
 
+void test_move() {
+  std::vector<int> vec1 = {1, 2, 3};
+
+  std::vector<int> v2 = std::move(vec1);
+  std::cout << "v2.size() " << v2.size() << ", v1.size() " << vec1.size() << std::endl;
+  vec1.push_back(1);
+
+  std::cout << "v1.size() " << vec1.size() << std::endl;
+}
+
 //template<typename T>
 //T::size_type count(T::iterator begin, ) {
 //
@@ -71,5 +81,6 @@ int main() {
   test_access_container();
   test_delete_container();
   test_resize();
+  test_move();
   return 0;
 }
