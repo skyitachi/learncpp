@@ -175,6 +175,25 @@ int main() {
       std::cout << "type z == type x" << std::endl;
     }
   }
+
+  {
+    std::function<int(int)> f;
+
+    if (f == nullptr) {
+      std::cout << "function is nullptr" << std::endl;
+    } else {
+      std::cout << "empty function is not nullptr" << std::endl;
+    }
+
+    f = [&](int a)->int {
+      return a + 10;
+    };
+    if (f == nullptr) {
+      std::cout << "lambda is nullptr" << std::endl;
+    } else {
+      std::cout << "lambda is not nullptr: " << f(10) << std::endl;
+    }
+  }
 }
 
 // 尾返回类型推导
