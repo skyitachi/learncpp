@@ -8,7 +8,6 @@
 
 #include <thread>
 
-//using idx_t = faiss::Index::idx_t;
 using idx_t = faiss::idx_t;
 
 void merge_index_demo() {
