@@ -6,7 +6,10 @@
 #include <faiss/IndexIVFFlat.h>
 #include <faiss/impl/io.h>
 
-using idx_t = faiss::Index::idx_t;
+#include <thread>
+
+//using idx_t = faiss::Index::idx_t;
+using idx_t = faiss::idx_t;
 
 void merge_index_demo() {
   int d = 4;
@@ -70,15 +73,25 @@ void merge_index_demo() {
   index1.merge_from(index2, 0);
 
   xq[0] = 4.0; xq[1] = 4.0; xq[2] = 4.0; xq[3] = 4.0;
-  std::cout << "after merge_index ------------" << std::endl;
   index1.search(nq, xq, k, D, I);
   for(int i = 0; i < nq; i++) {
     for(int j = 0; j < k; j++) {
-      printf("labels = [%ld], distance = [%f]\n", I[i * k + j], D[i * k + j]);
+      printf("same thread labels = [%ld], distance = [%f]\n", I[i * k + j], D[i * k + j]);
     }
   }
 
-  faiss::write_index_binary(index1, )
+  std::thread th([&]{
+    std::cout << "after merge_index ------------" << std::endl;
+    index1.search(nq, xq, k, D, I);
+    for(int i = 0; i < nq; i++) {
+      for(int j = 0; j < k; j++) {
+        printf("different thread labels = [%ld], distance = [%f]\n", I[i * k + j], D[i * k + j]);
+      }
+    }
+  });
+  th.join();
+
+//  faiss::write_index_binary(index1, )
 }
 
 int main() {
