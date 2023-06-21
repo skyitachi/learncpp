@@ -6,8 +6,13 @@
 
 class Base {
 public:
-  void foo() {}
+  void foo(double y, double x) {
+    std::cout << "base foo double x" << x <<  ", y: " << y << std::endl;
+  }
   virtual void base() {}
+
+  virtual void foo(int x) = 0 ;
+
 private:
   int data;
 };
@@ -15,6 +20,9 @@ private:
 class Derived: public Base {
 public:
   void bar() {}
+  void foo(int x) override {
+    std::cout << "derived foo int x " << x << std::endl;
+  }
 private:
   int derived_data;
   int derived_data2;
@@ -66,6 +74,10 @@ void testFunctionMember() {
   std::cout << "Point::z() addr: " << &Point::z << std::endl;
 }
 
+void testBaseAndDerive() {
+  Derived d;
+  d.foo(1.0);
+}
 
 int main() {
   char c = 'a';
@@ -84,4 +96,5 @@ int main() {
 
   testDataMemberAddr();
   testFunctionMember();
+  testBaseAndDerive();
 }
