@@ -5,10 +5,74 @@
 #include <faiss/IndexFlat.h>
 #include <faiss/IndexIVFFlat.h>
 #include <faiss/impl/io.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <cassert>
 
 #include <thread>
 
 using idx_t = faiss::idx_t;
+
+class ReaderWithFileOffset: public faiss::IOReader {
+public:
+  int offset;
+  ReaderWithFileOffset(std::string filename, int64_t off) {
+    offset = off;
+    name = filename;
+    fd_ = ::open(name.c_str(), O_RDONLY, 0666);
+    if (fd_ < 0) {
+      std::cout << "open file failed: " << strerror(errno) << std::endl;
+      exit(1);
+    }
+    auto v_off = ::lseek(fd_, offset, SEEK_SET);
+    assert(v_off == offset);
+  }
+
+  size_t operator()(void* ptr, size_t size, size_t nitems) override {
+    auto sz = ::pread(fd_, ptr, size * nitems, offset);
+    offset += sz;
+    return nitems;
+  }
+
+  int fileno() override {
+    return fd_;
+  }
+
+private:
+  int fd_;
+};
+
+class WriterWithFileOffset: public faiss::IOWriter {
+public:
+  int offset;
+  WriterWithFileOffset(std::string filename, int64_t off) {
+    offset = off;
+    name = filename;
+    fd_ = ::open(name.c_str(), O_RDWR | O_CREAT, 0666);
+    if (fd_ < 0) {
+      std::cout << "open file failed: " << strerror(errno) << std::endl;
+      exit(1);
+    }
+    auto v_off = ::lseek(fd_, offset, SEEK_SET);
+    std::cout << "set file offset: " << v_off << " file descriptor: "<< fd_ << std::endl;
+  }
+
+  int fileno() override {
+    return fd_;
+  }
+
+  size_t operator()(const void* ptr, size_t size, size_t nitems) override {
+//    std::cout << "write index data: " << size << ", nitems: " << nitems << std::endl;
+    auto written = pwrite(fd_, ptr, size * nitems, offset);
+//    std::cout << "write data successfully: " << written << ", errno message: " << strerror(errno) << std::endl;
+    offset += written;
+    return nitems;
+  };
+
+private:
+  int fd_;
+};
+
 
 void merge_index_demo() {
   int d = 4;
@@ -90,7 +154,18 @@ void merge_index_demo() {
   });
   th.join();
 
-//  faiss::write_index_binary(index1, )
+  faiss::write_index(&index1, "saved.index");
+
+  auto *writer = new WriterWithFileOffset("saved_offset.index", 128);
+  faiss::write_index(&index1, writer);
+
+
+  ReaderWithFileOffset reader("saved_offset.index", 128);
+  auto* index_read = faiss::read_index(&reader, 0);
+  std::cout << "index_read: dimension = " << index_read->d << ", ntotal = "<< index_read->ntotal << std::endl;
+  assert(index1.is_trained == index_read->is_trained);
+  assert(index1.d == index_read->d);
+  assert(index1.ntotal == index_read->ntotal);
 }
 
 int main() {
