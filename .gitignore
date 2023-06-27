@@ -7,3 +7,5 @@ cmake-build-release
 build
 .vscode
 cmake-build-debug-event-trace
+*.out
+*.pcm
