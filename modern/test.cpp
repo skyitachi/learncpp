@@ -11,6 +11,7 @@
 #include <initializer_list>
 #include "defer.h"
 #include <jemalloc/jemalloc.h>
+#include <functional>
 
 #define JEMALLOC_NO_DEMANGLE
 // std::optional has a some memory overhead
@@ -193,6 +194,16 @@ int main() {
     } else {
       std::cout << "lambda is not nullptr: " << f(10) << std::endl;
     }
+  }
+
+  {
+    int x = 42;
+    std::reference_wrapper<int> ref = x;
+    x = 99;
+    std::cout << "ref value: " << ref << std::endl;
+
+    ref.get() = 100;
+    std::cout << "direct value: " << x << std::endl;
   }
 }
 
