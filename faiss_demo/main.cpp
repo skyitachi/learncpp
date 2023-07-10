@@ -174,12 +174,18 @@ public:
   bool is_member(idx_t id) const override {
     return id > 10;
   }
+};
 
+class CustomSearchParams: public faiss::SearchParameters {
+public:
+  CustomSearchParams(CustomIDSelector* sel) {
+    this->sel = sel;
+  }
 };
 
 void search_with_params() {
   int d = 3;
-  int nb = 100;
+  int nb = 1000;
   int nq = 1;
 
   float *xb = new float[d * nb];
@@ -209,38 +215,29 @@ void search_with_params() {
   float *D = new float[k * nq];
   index.search(1, xq, k, D, I);
 
-  for(int i = 0; i < 3; i++) {
-    printf("Query %d:", i);
-    for(int k = 0; k < d; k++) {
-      printf(" %g", xq[i * d + k]);
-    }
-    printf("\n");
-
+  for(int i = 0; i < 1; i++) {
     for(int j = 0; j < k; j++) {
       int idx = I[i * k + j];
-      printf("  %d (distance=%g) origin vector: ", idx, D[i * k + j]);
+      printf("search_idx = %d (distance=%g) origin vector: ", idx, D[i * k + j]);
       for (int k = 0; k < d; k++) {
         printf(" %g", xb[idx * d + k]);
       }
       printf("\n");
     }
   }
-  auto* params = new faiss::SearchParameters;
-  params->sel = new CustomIDSelector;
 
+  std::cout << "sorted ids: " << index.check_ids_sorted() << std::endl;
+
+  faiss::SearchParametersIVF* params = new faiss::SearchParametersIVF();
+  params->sel = new CustomIDSelector();
+//  params->quantizer_params = new CustomSearchParams(new CustomIDSelector);
 
   index.search(1, xq, k, D, I, params);
 
-  for(int i = 0; i < 3; i++) {
-    printf("Query %d:", i);
-    for(int k = 0; k < d; k++) {
-      printf(" %g", xq[i * d + k]);
-    }
-    printf("\n");
-
+  for(int i = 0; i < 1; i++) {
     for(int j = 0; j < k; j++) {
       int idx = I[i * k + j];
-      printf("  %d (distance=%g) origin vector: ", idx, D[i * k + j]);
+      printf("search_idx=%d (distance=%g) origin vector: ", idx, D[i * k + j]);
       for (int k = 0; k < d; k++) {
         printf(" %g", xb[idx * d + k]);
       }
