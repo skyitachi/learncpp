@@ -247,10 +247,33 @@ void search_with_params() {
 
 }
 
-int main() {
+int global_array[100] = {-1};
+
+void double_free() {
+  int* a = new int;
+  delete a;
+  delete a;
+}
+
+int *g_ptr;
+void leak_demo() {
+  g_ptr = new int;
+  g_ptr = nullptr;
+}
+
+void leak_demo_c() {
+  void *p;
+  p = malloc(7);
+  p = 0; // The memory is leaked here.
+}
+
+int main(int argc, char **argv) {
   search_with_params();
+  // 都没有用
+  leak_demo();
+  leak_demo_c();
 
 //  merge_index_demo();
-
-	return 0;
+//  return global_array[argc + 100];
+  return 0;
 }
