@@ -85,6 +85,14 @@ void array_demo() {
   printf("nullmap value %d\n", *nullbitmap);
 }
 
+void arrow_list_demo() {
+  std::shared_ptr<arrow::DataType> type;
+  type = arrow::int16();
+  type = arrow::list(arrow::float32());
+
+
+}
+
 int main(int argc, char **argv) {
   array_demo();
 	std::vector<data_row> rows = {
