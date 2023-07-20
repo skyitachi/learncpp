@@ -85,15 +85,61 @@ void array_demo() {
   printf("nullmap value %d\n", *nullbitmap);
 }
 
-void arrow_list_demo() {
-  std::shared_ptr<arrow::DataType> type;
-  type = arrow::int16();
-  type = arrow::list(arrow::float32());
+arrow::Status arrow_list_demo() {
+//  std::shared_ptr<arrow::DataType> type;
+//  type = arrow::int16();
+//  type = arrow::list(arrow::float32());
+
+  arrow::MemoryPool* pool = arrow::default_memory_pool();
+
+  // 创建一个ListBuilder对象，用于构建一个整数列表
+  auto list_builder =
+      std::make_shared<arrow::ListBuilder>(pool, std::make_shared<arrow::Int32Builder>(pool));
+
+  auto *list_value_builder = static_cast<arrow::Int32Builder*>(list_builder->value_builder());
+
+  // Indicate the start of a new list row. This will memorise the current
+  // offset in the values builder.
+  ARROW_RETURN_NOT_OK(list_builder->Append());
+  // 添加数据到列表中
+  list_value_builder->Append(10);
+  list_value_builder->Append(20);
+
+  list_builder->Append(false);
+
+  list_builder->Append();
+  list_value_builder->Append(10);
+  list_value_builder->Append(20);
+  list_value_builder->Append(30);
+
+  list_builder->Append();
+  list_value_builder->Append(1);
+  list_value_builder->Append(2);
+  list_value_builder->Append(3);
 
 
+  // 完成列表的构建，并创建一个ListArray对象
+  std::shared_ptr<arrow::Array> list_array;
+  list_builder->Finish(&list_array);
+
+  // 输出列表中的数据
+  auto list = std::static_pointer_cast<arrow::ListArray>(list_array);
+  for (int i = 0; i < list->length(); i++) {
+    if (list->IsNull(i)) {
+      std::cout << "null" << std::endl;
+    } else {
+      auto value = std::static_pointer_cast<arrow::Int32Array>(list->value_slice(i));
+      for (int j = 0; j < value->length(); j++) {
+        std::cout << value->Value(j) << std::endl;
+      }
+    }
+  }
+
+  return arrow::Status::OK();
 }
 
 int main(int argc, char **argv) {
+  arrow_list_demo();
   array_demo();
 	std::vector<data_row> rows = {
      {1, 1, {10.0}}, {2, 3, {11.0, 12.0, 13.0}}, {3, 2, {15.0, 25.0}}};
