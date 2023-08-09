@@ -61,6 +61,68 @@ public:
   }
 };
 
+struct UDFWrapper {
+  // NOTE: important
+  template<typename TR, typename... Args>
+  static TR createBinaryFunction(TR (*udf_func)(Args...)) {
+    std::cout << "should be ignored in the binary" << std::endl;
+  }
+
+  template<typename TR, typename TA1, typename TA2>
+  static TR createBinaryFunction(TR (*udf_func)(TA1, TA2)) {
+    std::cout << "in the binary" << std::endl;
+  }
+
+  template<typename TR, typename... Args>
+  static TR createUnaryFunction(TR (*udf_func)(Args...)) {
+    std::cout << "should be ignored in the unary" << std::endl;
+  }
+
+  template<typename TR, typename TA>
+  static TR createUnaryFunction(TR (*udf_func)(TA)) {
+    std::cout << "in the unary" << std::endl;
+  }
+
+
+// NOTE: it does not work
+  template<typename TR, typename... Args>
+  static TR registerCallback(TR (*udf_func)(Args...)) {
+    const std::size_t num_args = sizeof... (Args);
+    std::cout << "args size: " << num_args << std::endl;
+    switch (num_args) {
+      case 1:
+        return createUnaryFunction<TR, Args...>(udf_func);
+      case 2:
+        return createBinaryFunction<TR, Args...>(udf_func);
+      default:
+        std::cout << "unexpect args" << std::endl;
+    }
+  }
+
+};
+
+int sum(int a, int b) {
+  return a + b;
+}
+
+int id(int n) {
+  return n;
+}
+
+void registerCallBackDirect(std::function<int(int, int)> f) {
+
+}
+
+void test_register_callback() {
+//  registerCallback<int, int, int>([=](int a, int b)->int {
+//
+//  });
+//
+  UDFWrapper::registerCallback<int, int, int>(sum);
+  UDFWrapper::registerCallback<int, int>(id);
+  registerCallBackDirect(sum);
+}
+
 int main() {
 
   DEFER([] { std::cout << "in the defer block" << std::endl; });
