@@ -9,3 +9,4 @@ build
 cmake-build-debug-event-trace
 *.out
 *.pcm
+thirdparty
