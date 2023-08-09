@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(learncpp)
 
-include_directories(/usr/local/include)
+include_directories(/usr/local/include "${CMAKE_SOURCE_DIR}")
 LINK_DIRECTORIES(/usr/local/lib)
 
 set(CMAKE_CXX_STANDARD 20)
