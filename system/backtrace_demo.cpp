@@ -33,7 +33,7 @@ inline std::string demangle( char const * name) {
   std::string s(name);
   char const *demangled=demangle_alloc(name);
   DEFER([&](){
-    delete demangled;
+    free(const_cast<char*>(demangled));
   });
   if (demangled != nullptr) {
     s = std::string(demangled);
@@ -49,7 +49,7 @@ std::ostream& bt(std::ostream &out, int level) {
   }
   char **symbols = backtrace_symbols(frame_array, n);
   DEFER([&]() {
-    delete symbols;
+    free(symbols);
   });
 
   std::smatch groups;
@@ -73,7 +73,7 @@ void f2() {
 }
 
 void f3() {
-  bt(std::cout, 8);
+  bt(std::cout, 0);
 }
 
 int main() {
