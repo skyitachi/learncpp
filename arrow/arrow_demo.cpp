@@ -154,6 +154,7 @@ arrow::Status arrow_nested_list_demo() {
 
 }
 
+
 class RandomBatchGenerator {
 public:
   std::shared_ptr<arrow::Schema> schema;
@@ -282,13 +283,56 @@ arrow::Status arrow_list_demo() {
     }
   }
 
+
+  std::cout << "list 0 value: " << list->GetScalar(0).ValueOrDie()->ToString() << std::endl;
+
+  std::cout << "---------------end of list demo ----------------" << std::endl;
+
+  return arrow::Status::OK();
+}
+
+
+arrow::Status arrow_map_demo() {
+
+  arrow::MemoryPool* pool = arrow::default_memory_pool();
+  auto field1 = arrow::field("name", arrow::utf8());
+  auto field2 = arrow::field("age", arrow::int32());
+  auto struct_type = arrow::StructType({field1, field2}) ;
+
+  std::cout << "struct type: " << struct_type.ToString() << std::endl;
+
+  arrow::StringBuilder f1_builder(pool);
+  ARROW_RETURN_NOT_OK(f1_builder.AppendValues({"a", "b", "c"}));
+
+  arrow::Int32Builder f2_builder(pool);
+  ARROW_RETURN_NOT_OK(f2_builder.AppendValues({1, 2, 3}));
+
+  std::shared_ptr<arrow::Array> f1_values, f2_values;
+  ARROW_ASSIGN_OR_RAISE(f1_values, f1_builder.Finish());
+  ARROW_ASSIGN_OR_RAISE(f2_values, f2_builder.Finish());
+
+
+  std::cout << "array values: " << f1_values->GetScalar(0).ValueOrDie()->ToString() << std::endl;
+
+  auto struct_array = arrow::StructArray::Make(
+      {f1_values, f2_values}, {field1, field2}).ValueOrDie();
+
+  std::cout << "struct array values: " << struct_array->ToString() << "\n ------------------------\n";
+
+
+  std::cout << "field pos 0: " << struct_array->field(0)->ToString() << std::endl;
+  std::cout << "field pos 1: " << struct_array->field(1)->ToString() << std::endl;
+
+  std::cout << "------------------end of arrow struct demo---------------" << std::endl;
+
   return arrow::Status::OK();
 }
 
 int main(int argc, char **argv) {
-  arrow_nested_list_demo();
-  create_arrays_with_schema_demo();
-  arrow_list_demo();
+  auto _  = arrow_map_demo();
+  _ = arrow_nested_list_demo();
+  _ = create_arrays_with_schema_demo();
+  _ = arrow_list_demo();
   array_demo();
 	std::vector<data_row> rows = {
      {1, 1, {10.0}}, {2, 3, {11.0, 12.0, 13.0}}, {3, 2, {15.0, 25.0}}};
