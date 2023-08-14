@@ -123,8 +123,56 @@ void test_register_callback() {
   registerCallBackDirect(sum);
 }
 
+// function template overload?
+
+
+struct BaseOperator {
+  template <class TR>
+  static inline TR OperationForValue(int input) {
+  }
+};
+
+struct DerivedOperator: BaseOperator {
+  template <class TR>
+  static inline TR Operation(int input) {
+    std::cout << "in the second operation" << std::endl;
+    TR a = (TR)(input + 10);
+    return a;
+  }
+};
+
+struct UnaryExecutor: BaseOperator {
+  template <class TR>
+  static inline TR Operation(int input) {
+    std::cout << "in the second operation" << std::endl;
+    TR a = (TR)(input + 10);
+    return a;
+  }
+
+  template <class TA, class TR>
+  static inline TR Operation(TA input) {
+    std::cout << "in the first operation" << std::endl;
+    TR a = (TR) input;
+    return a;
+  }
+
+
+};
+
+void template_function_demo() {
+  auto v = UnaryExecutor::Operation<double>(10);
+
+  auto v2 = UnaryExecutor::Operation<double, double>(10.0);
+
+  std::cout << v << ", " << v2 << std::endl;
+
+  UnaryExecutor::OperationForValue<int>(10);
+
+}
+
 int main() {
 
+  template_function_demo();
   DEFER([] { std::cout << "in the defer block" << std::endl; });
   std::optional<std::string> s = std::nullopt;
   if (s) {
