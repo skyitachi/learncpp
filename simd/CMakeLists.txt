@@ -3,3 +3,5 @@ target_link_libraries(simd_demo benchmark)
 
 set(CMAKE_CXX_FLAGS "-mavx2")
 add_executable(simd_api_demo demo.cpp)
+
+add_executable(simd_parse_float parse_float.cpp)
