@@ -167,7 +167,6 @@ void template_function_demo() {
   std::cout << v << ", " << v2 << std::endl;
 
   UnaryExecutor::OperationForValue<int>(10);
-
 }
 
 int main() {
