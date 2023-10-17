@@ -4,3 +4,5 @@ add_executable(test_modern test.cpp)
 target_link_libraries(test_modern jemalloc)
 
 add_executable(test_coroutine coroutine.cpp)
+
+add_executable(variants_demo variants_demo.cpp)
