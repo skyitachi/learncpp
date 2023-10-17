@@ -124,8 +124,6 @@ void test_register_callback() {
 }
 
 // function template overload?
-
-
 struct BaseOperator {
   template <class TR>
   static inline TR OperationForValue(int input) {
@@ -167,6 +165,31 @@ void template_function_demo() {
   std::cout << v << ", " << v2 << std::endl;
 
   UnaryExecutor::OperationForValue<int>(10);
+}
+
+//　只有枚举类型的可以这么搞
+enum class TypeKind: int8_t {
+  BOOLEAN = 0,
+  TINYINT = 1,
+  SMALLINT = 2,
+};
+
+class ChildType {};
+
+template<TypeKind kind>
+class FlatmapColumnWriter {
+
+};
+
+//template<ChildType ch>
+//class NestedVector {
+//
+//};
+
+void test_specific_template() {
+  FlatmapColumnWriter<TypeKind::BOOLEAN> t1;
+
+//  FlatmapColumnWriter<int> t2;
 }
 
 int main() {
