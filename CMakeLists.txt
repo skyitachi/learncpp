@@ -57,3 +57,5 @@ add_subdirectory(abseil_tips_demo)
 add_subdirectory(hashmap_demo)
 
 add_subdirectory(module)
+
+add_subdirectory(kv_engine)
