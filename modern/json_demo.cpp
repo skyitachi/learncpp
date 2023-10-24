@@ -28,7 +28,22 @@ int main() {
   const json& v = j["colors"];
   std::cout << "colors: " << v << std::endl;
   //  use json path read json
-  json result = jsonpath::json_query(j,"$.colors");
+  json result = jsonpath::json_query(j,"$.colors[*]");
   std::cout << pretty_print(result) << std::endl;
+  std::cout << "result value type: " << result.type() << std::endl;
+  std::cout << result[0] << std::endl;
+
+  json app_field = jsonpath::json_query(j, "$.application");
+  std::cout << "app_field type: " << app_field.type() << ", size: " << app_field.size() << std::endl;
+  jsonpath::json_replace(j, "$.colors", [](const std::string& path, json& colors) {
+    if (colors.is_array()) {
+      auto it = colors.array_range().begin();
+      it++;
+      colors.insert(it, "green");
+      colors.insert(colors.array_range().end(), 10);
+    }
+    std::cout << "replace callback colors: " << colors << std::endl;
+  });
+  std::cout << "after replace: " << j << std::endl;
   return 0;
 }
