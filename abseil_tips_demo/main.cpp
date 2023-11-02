@@ -39,11 +39,11 @@ void AlreadyHasCharStar(const char* s) {
 
 namespace aspace {
   struct A {};
-  void func(const A&);  // found by ADL name lookup on 'a'.
+  void func(const A&) {}  // found by ADL name lookup on 'a'.
 }  // namespace aspace
 
 namespace bspace {
-  void func(int);  // found by lexical scope name lookup
+  void func(int) {}  // found by lexical scope name lookup
   void test() {
     aspace::A a;
     func(a);  // aspace::func(const aspace::A&) due to ADL
@@ -52,6 +52,7 @@ namespace bspace {
 
 class Foo{
 public:
+  Foo(){}
   explicit Foo(int i) {}
   void PrintDebugString() {}
 };
@@ -77,6 +78,40 @@ void SmarterThanTheCompilerButNot() {
   // Compiles, BUT VIOLATES THE RULE and will double-delete at runtime.
   std::unique_ptr<Foo> k(j);
   std::unique_ptr<Foo> l(j);
+}
+
+struct Bar {};
+
+struct MyFormatter {
+  void operator()(std::string* out, const Foo& f) const {
+    out->append("Foo");
+  }
+  void operator()(std::string* out, const Bar& b) const {
+    out->append("Bar");
+  }
+};
+
+std::string s = absl::StrJoin(std::forward_as_tuple(Foo(), Bar()), "-",
+                              MyFormatter());
+void join_tuple_demo() {
+  auto tup = std::make_tuple(123, "abc", 0.456);
+  std::string s = absl::StrJoin(tup, "-");
+
+  std::cout << s << std::endl;
+
+  int a = 123;
+  std::string b = "abc";
+  double c = 0.456;
+
+  s = absl::StrJoin(std::make_tuple(a, b, c), "-");
+  std::cout << s << std::endl;
+  s = absl::StrJoin(std::tie(a, b, c), "-");
+  std::cout << s << std::endl;
+  s = absl::StrJoin(std::forward_as_tuple(123, c), "-");
+  std::cout << s << std::endl;
+
+  s = absl::StrJoin(std::forward_as_tuple(Foo(), Bar()), "-", MyFormatter{});
+  std::cout << s << std::endl;
 }
 
 int main() {
@@ -134,4 +169,6 @@ int main() {
     std::cout << "split to list: " << s1.size() << std::endl;
 
   }
+
+  join_tuple_demo();
 }
