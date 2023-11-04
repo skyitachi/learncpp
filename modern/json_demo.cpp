@@ -20,7 +20,9 @@ int main() {
            "generated": 1514862245
          }
        ],
-       "colors": ["blue", "red"]
+       "colors": ["blue", "red"],
+       "int": 100,
+       "float": 123.456
     }
   )";
 
@@ -45,5 +47,16 @@ int main() {
     std::cout << "replace callback colors: " << colors << std::endl;
   });
   std::cout << "after replace: " << j << std::endl;
+
+  jsonpath::json_replace(j, "$.int", [](const std::string& path, json& value) {
+    if (!value.is_number()) {
+      return;
+    }
+    if (value.is_int64()) {
+      auto v = value.as_integer<int64_t>();
+      value = v + 1;
+    }
+  });
+  std::cout << "after number incr: " << j["int"] << std::endl;
   return 0;
 }
