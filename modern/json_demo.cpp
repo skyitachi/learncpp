@@ -48,15 +48,19 @@ int main() {
   });
   std::cout << "after replace: " << j << std::endl;
 
-  jsonpath::json_replace(j, "$.int", [](const std::string& path, json& value) {
+  auto arr_result = json::make_array();
+  jsonpath::json_replace(j, "$.int", [&arr_result](const std::string& path, json& value) {
     if (!value.is_number()) {
+      arr_result.push_back(json::null());
       return;
     }
     if (value.is_int64()) {
       auto v = value.as_integer<int64_t>();
       value = v + 1;
+      arr_result.push_back(value);
     }
   });
   std::cout << "after number incr: " << j["int"] << std::endl;
+  std::cout << "json value: " << arr_result << std::endl;
   return 0;
 }
