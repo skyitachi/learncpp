@@ -192,8 +192,17 @@ void test_specific_template() {
 //  FlatmapColumnWriter<int> t2;
 }
 
+void string_literal_demo() {
+
+  std::string my_string = R"foo(This contains quoted parens "()")foo";
+
+  std::cout << my_string << std::endl;
+}
+
+
 int main() {
 
+  string_literal_demo();
   template_function_demo();
   DEFER([] { std::cout << "in the defer block" << std::endl; });
   std::optional<std::string> s = std::nullopt;
