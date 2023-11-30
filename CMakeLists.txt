@@ -59,3 +59,4 @@ add_subdirectory(hashmap_demo)
 add_subdirectory(module)
 
 add_subdirectory(kv_engine)
+add_subdirectory(database_indexing)
