@@ -12,3 +12,5 @@ add_executable(data_structure data_structure.cpp)
 add_executable(json_demo json_demo.cpp)
 
 add_executable(enum_demo enum_demo.cpp)
+
+add_executable(exception_demo exception.cpp)
