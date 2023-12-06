@@ -35,4 +35,8 @@ int main() {
 
   std::cout << "after test_pass_ref origin ref_int value: " << ref_int << std::endl;
 
+  ref_int.get() = 100;
+
+  std::cout << "ga now is: " << ga << std::endl;
+
 }
