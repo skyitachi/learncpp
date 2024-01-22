@@ -9,7 +9,7 @@
  */
 
 #include <inttypes.h>
-#include <endian.h>
+#include "portable_endian.h"
 
 #include "utils.h"
 
