@@ -17,3 +17,9 @@ target_link_libraries(t_stress thmap)
 add_executable(thmap_demo thmap_demo.cpp)
 
 target_link_libraries(thmap_demo thmap)
+
+# important
+string(APPEND CMAKE_CXX_STANDARD_LIBRARIES " -latomic")
+
+add_executable(atomic_demo atomic_demo.cpp)
+#target_link_libraries(atomic_demo atomic)

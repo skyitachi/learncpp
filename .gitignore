@@ -1,4 +1,4 @@
-cmake-build-debug
+cmake-build-debug*
 cmake-build-release
 *.log
 .DS_Store
