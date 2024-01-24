@@ -54,6 +54,9 @@ public:
 //        data_ = value.data_;
 //        lock_.store(value.lock_);
 //    }
+    void shared_lock() {
+
+    }
 
 public:
     uint64_t data_;
@@ -178,6 +181,184 @@ void lock_node_demo() {
     std::cout << "lock by node final count: " <<g_count << std::endl;
 }
 
+class rw_spin_lock
+{
+public:
+    rw_spin_lock()
+    {
+        _readers = 0;
+    }
+
+public:
+    void acquire_reader()
+    {
+        int retry = 0;
+        while (true)
+        {
+            uint32_t prev_readers = _readers;
+            if (prev_readers != HAS_WRITER)
+            {
+                uint32_t new_readers = prev_readers + 1;
+                if (_readers.compare_exchange_weak(prev_readers, new_readers))
+                {
+                    // we've won the race
+                    return;
+                }
+            }
+
+            retry++;
+            if (retry > RETRY_THRESHOLD)
+            {
+                retry = 0;
+                std::this_thread::yield();
+            }
+        }
+    }
+
+    void release_reader()
+    {
+        int retry = 0;
+        while (true)
+        {
+            uint32_t prev_readers = _readers;
+            if (prev_readers != HAS_WRITER && prev_readers > 0)
+            {
+                uint32_t new_readers = prev_readers - 1;
+                if (_readers.compare_exchange_weak(prev_readers, new_readers))
+                {
+                    // we've won the race
+                    return;
+                }
+            }
+
+            retry++;
+            if (retry > RETRY_THRESHOLD)
+            {
+                retry = 0;
+                std::this_thread::yield();
+            }
+        }
+    }
+
+    void acquire_writer()
+    {
+        int retry = 0;
+        while (true)
+        {
+            uint32_t prev_readers = _readers;
+            if (prev_readers == 0)
+            {
+                if (_readers.compare_exchange_weak(prev_readers, HAS_WRITER))
+                {
+                    // we've won the race
+                    return;
+                }
+            }
+
+            retry++;
+            if (retry > RETRY_THRESHOLD)
+            {
+                // save some cpu cycles
+                retry = 0;
+                std::this_thread::yield();
+            }
+        }
+    }
+
+    void release_writer()
+    {
+        int retry = 0;
+        while (true)
+        {
+            uint32_t prev_readers = _readers;
+            if (prev_readers == HAS_WRITER)
+            {
+                if (_readers.compare_exchange_weak(prev_readers, 0))
+                {
+                    // we've won the race
+                    return;
+                }
+            }
+
+            retry++;
+            if (retry > RETRY_THRESHOLD)
+            {
+                // save some cpu cycles
+                retry = 0;
+                std::this_thread::yield();
+            }
+        }
+    }
+
+private:
+    const uint32_t HAS_WRITER = 0xffffffff;
+    const int RETRY_THRESHOLD = 100;
+    std::atomic<uint32_t> _readers;
+};
+
+class reader_lock
+{
+public:
+    reader_lock(rw_spin_lock &lock) : _lock(lock)
+    {
+        _lock.acquire_reader();
+    }
+
+    ~reader_lock()
+    {
+        _lock.release_reader();
+    }
+
+private:
+    rw_spin_lock &_lock;
+};
+
+class writer_lock
+{
+public:
+    explicit writer_lock(rw_spin_lock &lock) : _lock(lock)
+    {
+        _lock.acquire_writer();
+    }
+
+    ~writer_lock()
+    {
+        _lock.release_writer();
+    }
+
+private:
+    rw_spin_lock &_lock;
+};
+
+void reader_writer_lock_demo() {
+    rw_spin_lock lock;
+    int g_count = 0;
+
+    std::cout << " sizeof(std::atomic<uint64_t>) = " << sizeof(lock) <<std::endl;
+    std::cout << " sizeof(std::atomic<uint32_t>) = " << sizeof(std::atomic<uint32_t>) <<std::endl;
+
+    std::vector<std::thread> ths;
+
+    for (int i = 0; i < 20; i++) {
+        ths.emplace_back([&] {
+            for (int i = 0; i < 10000; i++) {
+                writer_lock lock_guard(lock);
+                g_count++;
+            }
+        });
+
+    }
+
+    for(auto &th: ths) {
+        th.join();
+    }
+
+    std::cout << "final count: " <<g_count << std::endl;
+
+}
+
+
+
 int main() {
 
     std::atomic<bool> lock{false};
@@ -199,6 +380,7 @@ int main() {
 
 //    lock_demo();
 
+    reader_writer_lock_demo();
     std::atomic<int> counter = {0};
     counter.fetch_add(1);
 
