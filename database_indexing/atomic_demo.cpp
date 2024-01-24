@@ -8,7 +8,7 @@
 #include <vector>
 #include <type_traits>
 
-constexpr uint64_t LOCK_FLAG = 0x1;
+constexpr uint64_t LOCK_FLAG = 1L >> 63;
 
 #define	SPINLOCK_BACKOFF_MIN	4
 #define	SPINLOCK_BACKOFF_MAX	128
@@ -21,7 +21,39 @@ constexpr uint64_t LOCK_FLAG = 0x1;
 
 class Node {
 public:
-    Node(uint64_t data): data_(data) {}
+    Node(): data_(0) {}
+    Node(uint64_t data, uint64_t lock): data_(data), lock_(lock) {}
+
+    explicit Node(uint64_t data): data_(data) {}
+
+//    Node(const Node& other): data_(other.data_), lock_(0) {}
+//
+//    Node(Node &&other) noexcept : data_(other.data_), lock_(0) {}
+//
+//    Node &operator=(const Node& other) {
+//        if (this != &other) {
+//            data_ = other.data_;
+//            lock_ = 0;
+//        }
+//        return *this;
+//    }
+//
+//    Node &operator=(Node &&other) noexcept {
+//        if (this != &other) {
+//            data_ = other.data_;
+//            lock_ = 0;
+//        }
+//        return *this;
+//    }
+//
+//    Node load() const {
+//        return {data_, lock_.load()};
+//    }
+//
+//    void store(const Node &value) {
+//        data_ = value.data_;
+//        lock_.store(value.lock_);
+//    }
 
 public:
     uint64_t data_;
@@ -38,7 +70,7 @@ void lock_node(std::atomic<Node> &node) {
 
     unsigned bcount = 4;
     Node s = Node(0);
-    again:
+again:
     s = std::atomic_load(&node);
     if (s.data_ & LOCK_FLAG) {
         SPINLOCK_BACKOFF(bcount);
@@ -62,18 +94,26 @@ void unlock_node(std::atomic<Node>  &node) {
 void shared_lock_node(std::atomic<Node> &node) {
     do {
         Node n = node.load(std::memory_order_acquire);
-        if (!(n.lock_ & LOCK_FLAG)) {
+        if (n.lock_ & LOCK_FLAG) {
+            std::this_thread::yield();
+
+        } else {
             break;
         }
     } while(true);
+
+    do {
+        Node n = node.load(std::memory_order_acquire);
+
+    } while (true);
 
 }
 
 void lock(std::atomic<uint64_t>& node) {
     unsigned bcount = 4;
     uint64_t s;
-    again:
-    s = std::atomic_load(&node);
+again:
+    s = node.load();
     if (s & LOCK_FLAG) {
         SPINLOCK_BACKOFF(bcount);
         goto again;
@@ -115,7 +155,7 @@ void lock_demo() {
 }
 
 void lock_node_demo() {
-    std::atomic<Node> node = {0};
+    std::atomic<Node> node;
     int g_count = 0;
 
     std::vector<std::thread> ths;
@@ -157,5 +197,11 @@ int main() {
 
     std::cout << "is_move_assignable: " << ret << std::endl;
 
-    lock_demo();
+//    lock_demo();
+
+    std::atomic<int> counter = {0};
+    counter.fetch_add(1);
+
+    // 没有fetch add的功能
+    std::atomic<Node> n_counter;
 }
