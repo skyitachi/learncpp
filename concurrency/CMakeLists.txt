@@ -12,3 +12,11 @@ target_link_libraries(concurrent_hashmap_tests gtest)
 target_link_libraries(mutex boost_thread-mt boost_system-mt pthread)
 
 target_link_libraries(folly_demo folly glog fmt)
+
+find_package(OpenMP REQUIRED)
+if (OPENMP_FOUND)
+    message(STATUS "OpenMP found")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+endif()
+
+add_executable(openmp_demo openmp_demo.cpp)

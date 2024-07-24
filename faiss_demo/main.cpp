@@ -35,7 +35,7 @@ public:
     return nitems;
   }
 
-  int fileno() override {
+  int filedescriptor() override {
     return fd_;
   }
 
@@ -58,7 +58,11 @@ public:
     std::cout << "set file offset: " << v_off << " file descriptor: "<< fd_ << std::endl;
   }
 
-  int fileno() override {
+  int filedescriptor() override {
+      return fd_;
+  }
+
+  int fileno() {
     return fd_;
   }
 
