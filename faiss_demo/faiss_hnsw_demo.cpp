@@ -106,5 +106,21 @@ int main() {
         std::cout << std::endl;
     }
 
+    try {
+        faiss::IndexHNSWFlat index2(d, M);
+        index.hnsw.efConstruction = ef_construction;
+        index.hnsw.efSearch = k;
+
+        index2.add(nb, xb.data());
+
+        index.merge_from(index2);
+
+        std::cout << "after merge: " + index.ntotal << std::endl;
+
+    } catch (faiss::FaissException& e) {
+        std::cout << "cannot merge faiss index: " << e.msg << std::endl;
+
+    }
+
     return 0;
 }
